@@ -1,2 +1,75 @@
-.nav-page {
+nav {
+  padding: 1rem;
+}
+
+.tile {
+  -webkit-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: all 350ms ease;
+  transition: all 350ms ease;
+}
+
+.scale-anm {
+  transform: scale(1);
+}
+
+.btn-nav {
+  font-family: Lato;
+  font-size: 1rem;
+  font-weight: normal;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  line-height: normal;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  height: auto;
+  border: 1px solid rgba(40, 87, 2, 0.45);
+  margin: 5px;
+  vertical-align: middle;
+  appearance: none;
+  color: #555;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.btn-nav:focus {
+  outline: none;
+  border-color: var(--darken-2);
+  box-shadow: 0 0 0 3px var(--darken-3);
+}
+
+.btn-nav-active {
+  box-shadow: rgba(40, 87, 2, 0.45) 0px 5px 15px !important;
+  border: 1px solid rgba(40, 87, 2, 0.45) !important;
+  color: rgba(40, 87, 2) !important;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn ease 1s;
+  animation-fill-mode: forwards;
+}
+
+.fade-out {
+  opacity: 1;
+  animation: fadeOut ease 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

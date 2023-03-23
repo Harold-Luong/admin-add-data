@@ -17,21 +17,13 @@ const HomePage = () => {
     >
       <Container>
         <Row>
-          <Col md={{ span: 12 }} className="my-5">
-            <NavPage />
-          </Col>
+          <NavPage />
         </Row>
         <hr></hr>
-        <Row>
-          <Col md={{ span: 12 }} className="my-5">
-            <Main />
-          </Col>
-        </Row>
+        <Row>{/* <Main /> */}</Row>
         <hr></hr>
         <Row>
-          <Col md={{ span: 12 }} className="my-5">
-            <FooterPage />
-          </Col>
+          <FooterPage />
         </Row>
       </Container>
     </ThemeProvider>
