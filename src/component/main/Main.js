@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Image } from "react-bootstrap";
-// import imageGallery from "../../asset/data";
-import "../main/main.scss";
-import imgLoad from "../../asset/gg.gif";
+import React, { useState } from "react";
 
-const Main = ({ dataImg, show }) => {
-  const [shouldRender, setRender] = useState(show);
-  const [classFade, setclassFade] = useState("");
-  useEffect(() => {
-    setTimeout(() => {
-      setclassFade("scale-anm");
-    }, 300);
-  }, [shouldRender]);
+import "../main/main.scss";
+
+import ShowModal from "./ShowModal";
+
+const Main = ({ dataImg, show, onAnimationEnd }) => {
+  //xu ly modal
+
+  const [modalShow, setModalShow] = useState(false);
+  const [dataModal, setdataModal] = useState([]);
+  const handleClose = () => setModalShow(false);
+  const handleShow = (data) => {
+    setdataModal(data);
+    setModalShow(true);
+  };
 
   return (
     <div className="container">
@@ -22,14 +24,15 @@ const Main = ({ dataImg, show }) => {
         <ul className="image-gallery">
           {dataImg.map((item, key) => {
             return (
-              <li key={key} className={" tile all lazyload " + classFade}>
+              <li
+                key={key}
+                className={
+                  "tile all lazyload " + ` ${show ? "scale-anm " : ""}`
+                }
+                onAnimationEnd={onAnimationEnd}
+              >
                 <img src={item.src} alt={item.location}></img>
-                <div
-                  className="overlay"
-                  data-bs-toggle="modal"
-                  data-bs-target="#showInforModal"
-                  data-whatever={item.id}
-                >
+                <div className="overlay" onClick={() => handleShow(item)}>
                   <span>{item.location}</span>
                 </div>
               </li>
@@ -37,6 +40,7 @@ const Main = ({ dataImg, show }) => {
           })}
         </ul>
       </div>
+      <ShowModal show={modalShow} onHide={handleClose} item={dataModal} />
     </div>
   );
 };

@@ -1,35 +1,75 @@
 import imageGallery from "../../asset/data";
 import "../nav/nav.scss";
 import Main from "../main/Main";
-
-import React, { useState, useEffect } from "react";
+import { Pagination } from "react-bootstrap";
+import React, { useState, useRef } from "react";
 import { convertLocationToSlugTag } from "../../asset/common";
+
 const NavPage = () => {
   const [show, setShow] = useState(true);
-  //lấy các location không trung lặp để render btn
+  const [imgGallery, setImgGallery] = useState(imageGallery);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedClassActive, setSelectedClassActive] = useState("all");
+
   const uniqueLocations = [
     ...new Set(imageGallery.map((item) => item.location)),
   ];
-  //state active btn
-  const [selectedClassActive, setSelectedClassActive] = useState("all");
-  //data img
-  const [imgGallery, setImgGallery] = useState(imageGallery);
-  //click btn filter
-  const handleClick = (event) => {
+  const effectFadeInOut = () => {
+    setShow(false);
+    setTimeout(() => {
+      setShow(true);
+    }, 350);
+  };
+  const handleClickFilterButton = async (event) => {
     const clickedButton = event.target;
     const valueFilter = clickedButton.dataset.rel;
     setSelectedClassActive(valueFilter);
-    const dataFilter = imageGallery.filter(
-      (item) => convertLocationToSlugTag(item.location) === valueFilter
-    );
-
+    const dataFilter = filterGalleryByLocation(valueFilter);
+    effectFadeInOut();
+    await delay(300);
     if (dataFilter.length > 0) {
       setImgGallery(dataFilter);
+      setCurrentPage(1);
     } else {
       setImgGallery(imageGallery);
     }
-    setShow(!show);
   };
+
+  const filterGalleryByLocation = (location) => {
+    return imageGallery.filter(
+      (item) => convertLocationToSlugTag(item.location) === location
+    );
+  };
+
+  const handlePageChange = async (pageNum) => {
+    effectFadeInOut();
+    await delay(300);
+    setCurrentPage(pageNum);
+  };
+
+  const getCurrentItems = () => {
+    const itemsPerPage = 4;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = imgGallery.slice(indexOfFirstItem, indexOfLastItem);
+    return currentItems;
+  };
+
+  const getPageNumbers = () => {
+    const itemsPerPage = 4;
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(imgGallery.length / itemsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
+
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  const renderCount = useRef(0);
+
+  renderCount.current++;
 
   return (
     <>
@@ -39,7 +79,7 @@ const NavPage = () => {
             selectedClassActive === "all" ? "btn-nav-active" : ""
           }`}
           data-rel="all"
-          onClick={handleClick}
+          onClick={handleClickFilterButton}
         >
           All
         </button>
@@ -52,13 +92,43 @@ const NavPage = () => {
                 : ""
             }`}
             data-rel={convertLocationToSlugTag(location)}
-            onClick={handleClick}
+            onClick={handleClickFilterButton}
           >
             {location}
           </button>
         ))}
       </div>
-      <Main dataImg={imgGallery} show={show} />
+      {getCurrentItems() && (
+        <Main
+          dataImg={getCurrentItems()}
+          show={show}
+          onAnimationEnd={() => setShow(true)}
+        />
+      )}
+      {/* Pagination */}
+      <div className="d-flex justify-content-center mt-4">
+        <Pagination>
+          <Pagination.Prev
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+          />
+          {getPageNumbers().map((pageNumber) => (
+            <Pagination.Item
+              key={pageNumber}
+              active={pageNumber === currentPage}
+              onClick={() => {
+                handlePageChange(pageNumber);
+              }}
+            >
+              {pageNumber}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next
+            disabled={currentPage === getPageNumbers().length}
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
+        </Pagination>
+      </div>
     </>
   );
 };

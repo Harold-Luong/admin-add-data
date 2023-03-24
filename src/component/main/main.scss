@@ -93,6 +93,11 @@ Responsive Image gallery Style rules
   .lazyload {
     position: relative;
   }
+  .img-size {
+    height: 300px;
+    width: auto;
+    object-fit: cover;
+  }
 
   /* .lazyload img {
   width: 100%;
